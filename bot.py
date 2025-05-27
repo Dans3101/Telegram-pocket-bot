@@ -1,16 +1,18 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler
 import os
 
-def start(update, context):
-    update.message.reply_text("Hello! Your bot is running successfully.")
+async def start(update, context):
+    await update.message.reply_text("Hello! Your Telegram Pocket Bot is running.")
 
 def main():
     token = os.getenv("TELEGRAM_BOT_TOKEN")
-    updater = Updater(token, use_context=True)
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler("start", start))
-    updater.start_polling()
-    updater.idle()
+    if not token:
+        print("Error: TELEGRAM_BOT_TOKEN is not set.")
+        return
 
-if __name__ == "__main__":
+    app = ApplicationBuilder().token(token).build()
+    app.add_handler(CommandHandler("start", start))
+    app.run_polling()
+
+if __name__ == '__main__':
     main()
